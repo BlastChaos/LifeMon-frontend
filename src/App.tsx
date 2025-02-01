@@ -16,10 +16,7 @@ function App() {
         <Route element={<HomeLayout />}>
           <Route index path="home" element={<Home />} />
           <Route path="tutorial" element={<Tutorial />} />
-          <Route path="team-builder" element={<TeamBuilderLayout />}>
-            <Route path="team" index element={<Team />} />
-            <Route path="lifemon" element={<LifemonList />} />
-          </Route>
+          <Route path="team" index element={<Team />} />
         </Route>
       </Routes>
     </BrowserRouter>

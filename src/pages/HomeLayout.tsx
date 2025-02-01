@@ -52,7 +52,7 @@ export const HomeLayout: React.FC = () => {
         />
         <NavLink
           label="Team builder"
-          onClick={() => navigation("/team-builder")}
+          onClick={() => navigation("/team")}
           style={{
             height: rem(70),
           }}
