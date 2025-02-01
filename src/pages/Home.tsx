@@ -47,7 +47,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
@@ -75,7 +75,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
@@ -103,7 +103,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
@@ -131,7 +131,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
@@ -158,7 +158,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
@@ -185,7 +185,7 @@ export const Home: React.FC = () => {
               <Stack>
                 <Text>Info</Text>
                 <Text>Name : </Text>
-                <Text>HP : </Text>
+                <Text>Type : </Text>
               </Stack>
             </Popover.Dropdown>
           </Popover>
