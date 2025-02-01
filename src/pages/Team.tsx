@@ -1,20 +1,29 @@
-import { Stack, Text, Title } from "@mantine/core";
+import { Stack, Text, Title, Tabs, Group, Button, Textarea } from "@mantine/core";
 import { LifeMonImage } from "../components/lifeMonImage";
+import { MyTeam } from "./MyTeam"; 
+import { LifemonList } from "./LifemonList"; 
 import { useLocation } from "react-router";
 
 export const Team: React.FC = () => {
   const location = useLocation();
   return (
-    <Stack>
-      <Title order={1}>Team builder</Title>
+    <Tabs variant="pills" defaultValue="gallery">
+      <Tabs.List>
+        <Tabs.Tab value="team">
+          Team
+        </Tabs.Tab>
+        <Tabs.Tab value="lifemon">
+          Lifemon
+        </Tabs.Tab>
+      </Tabs.List>
 
-      <Text>OK!!</Text>
+      <Tabs.Panel value="team">
+        <MyTeam/>
+      </Tabs.Panel>
 
-      <LifeMonImage
-        lifemon={{
-          url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png",
-        }}
-      />
-    </Stack>
+      <Tabs.Panel value="lifemon">
+        <LifemonList/>
+      </Tabs.Panel>
+    </Tabs>
   );
 };
