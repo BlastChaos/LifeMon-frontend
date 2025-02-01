@@ -8,7 +8,7 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const theme = createTheme({
-  /** Put your mantine theme override here */
+  
 });
 export const queryClient = new QueryClient();
 
