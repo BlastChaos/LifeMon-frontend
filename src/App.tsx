@@ -6,6 +6,7 @@ import { Home } from "./pages/Home";
 import { TeamBuilderLayout } from "./pages/TeamBuilderLayout";
 import { Team } from "./pages/Team";
 import { LifemonList } from "./pages/LifemonList";
+import { Tutorial } from "./pages/Tutorial";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route element={<HomeLayout />}>
           <Route index path="home" element={<Home />} />
-          <Route path="/team-builder" element={<TeamBuilderLayout />}>
+          <Route path="tutorial" element={<Tutorial />} />
+          <Route path="team-builder" element={<TeamBuilderLayout />}>
             <Route path="team" index element={<Team />} />
             <Route path="lifemon" element={<LifemonList />} />
           </Route>

@@ -1,9 +1,10 @@
-import { AppShell, Burger, Group } from "@mantine/core";
+import { AppShell, Burger, Group, NavLink, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 
 export const HomeLayout: React.FC = () => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const navigation = useNavigate();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   return (
     <AppShell
@@ -13,6 +14,8 @@ export const HomeLayout: React.FC = () => {
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
+      transitionDuration={500}
+      transitionTimingFunction="ease-out"
       padding="md"
     >
       <AppShell.Header>
@@ -31,7 +34,37 @@ export const HomeLayout: React.FC = () => {
           />
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="md"></AppShell.Navbar>
+      <AppShell.Navbar p="md" pb={"xl"}>
+        <NavLink
+          label="Overview"
+          onClick={() => navigation("/home")}
+          style={{
+            height: rem(70),
+          }}
+        />
+
+        <NavLink
+          label="Find battle"
+          onClick={() => navigation("/home")}
+          style={{
+            height: rem(70),
+          }}
+        />
+        <NavLink
+          label="Team builder"
+          onClick={() => navigation("/team-builder")}
+          style={{
+            height: rem(70),
+          }}
+        />
+        <NavLink
+          label="Tutorial"
+          onClick={() => navigation("/tutorial")}
+          style={{
+            height: rem(70),
+          }}
+        />
+      </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />
       </AppShell.Main>
