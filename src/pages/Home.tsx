@@ -4,11 +4,34 @@ import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../config";
 import { getUser } from "../helper/user";
+import { useContext, useEffect, useState } from "react";
+import { WebSocketsContext } from "../types";
 
 export const Home: React.FC = () => {
   const navigation = useNavigate();
 
+  const connection = useContext(WebSocketsContext);
+  const [waiting, setWaiting] = useState(false);
+
   const userId = getUser();
+
+  useEffect(() => {
+    connection?.on("MatchFound", (matchedPlayerId) => {
+      console.log("matchFound");
+      setWaiting(false);
+      alert(`You have been matched with player: ${matchedPlayerId}`);
+      navigation(`/battle/${matchedPlayerId}`);
+    });
+
+    connection?.on("WaitingForMatch", () => {
+      setWaiting(true);
+      alert("Waiting for another player...");
+    });
+    return () => {
+      connection?.off("MatchFound");
+      connection?.off("WaitingForMatch");
+    };
+  }, [connection, navigation]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId],
@@ -42,6 +65,11 @@ export const Home: React.FC = () => {
 
   console.log("LifeMons Data:", team.lifeMons);
 
+  const handleLogin = () => {
+    connection?.invoke("Login", userId);
+    setWaiting(true);
+  };
+
   return (
     <Stack h="100%" align="center" justify="center" gap="md">
       <Title order={1}>Your team:</Title>
@@ -65,8 +93,9 @@ export const Home: React.FC = () => {
         variant="filled"
         color="indigo"
         size="xl"
+        loading={waiting}
         radius="lg"
-        onClick={() => navigation("/home")}
+        onClick={() => handleLogin()}
       >
         <Title order={1}>Battle!!</Title>
       </Button>
