@@ -40,7 +40,7 @@ export const Home: React.FC = () => {
   }, [connection, navigation]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["lifemon", userId],
+    queryKey: ["lifemon", "team", userId],
     queryFn: async () => {
       const response = await fetch(
         `${config.apiUrl}/api/LifeMon/teams/${userId}`
@@ -55,16 +55,7 @@ export const Home: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return <Text>No team found.</Text>;
-  }
-
   const team = data[0];
-
-  if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
-    return <Text>No LifeMons found in the team.</Text>;
-  }
-
 
   const handleLogin = () => {
     connection?.invoke("Login", userId);

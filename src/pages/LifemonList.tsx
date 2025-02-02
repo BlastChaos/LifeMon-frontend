@@ -24,7 +24,7 @@ export const LifemonList: React.FC = () => {
     queryKey: ["lifemon", userId],
     queryFn: async () => {
       const response = await fetch(
-        `${config.apiUrl}/api/LifeMon/teams/${userId}`
+        `${config.apiUrl}/api/LifeMon/lifemons/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch team");
@@ -36,14 +36,12 @@ export const LifemonList: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  const team = data[0];
-
   const convertFileToBase64 = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setBase64Image(reader.result as string); 
+      setBase64Image(reader.result as string);
     };
-    reader.readAsDataURL(file); 
+    reader.readAsDataURL(file);
   };
 
   const fileToBase64 = (file: File): Promise<string> => {
@@ -69,7 +67,7 @@ export const LifemonList: React.FC = () => {
 
     const requestBody = {
       base64Image: image,
-      mimeType: "image/jpeg", 
+      mimeType: "image/jpeg",
       userId,
     };
 
@@ -88,8 +86,6 @@ export const LifemonList: React.FC = () => {
       if (!response.ok) {
         throw new Error("Image upload failed");
       }
-
-      const result = await response.json();
     } catch (error) {
       setUploadError("Failed to upload image");
       console.error("Upload error:", error);
@@ -109,7 +105,7 @@ export const LifemonList: React.FC = () => {
         onDrop={(acceptedFiles) => {
           setFiles(acceptedFiles);
           if (acceptedFiles[0]) {
-            convertFileToBase64(acceptedFiles[0]);  
+            convertFileToBase64(acceptedFiles[0]);
             handleFileUpload(acceptedFiles[0]);
           }
         }}
@@ -149,7 +145,7 @@ export const LifemonList: React.FC = () => {
           />
         </div>
       )}
-      {team?.lifeMons.map((lifeMon: any, index: number) => (
+      {data?.map((lifeMon: any, index: number) => (
         <Group key={lifeMon.id?.timestamp ?? index} gap="md">
           <Text>{index + 1}</Text>
           <Text>{lifeMon.name ?? "Unknown"}</Text>

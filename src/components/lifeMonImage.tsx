@@ -28,10 +28,7 @@ export const LifeMonImage: React.FC<Props> = (props) => {
           onMouseLeave={() => setOpenedIndex(false)}
         >
           <Image
-            src={
-              props.image &&
-              "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png"
-            }
+            src={props.image}
             onClick={props.onClick}
             style={{
               cursor: "pointer",
