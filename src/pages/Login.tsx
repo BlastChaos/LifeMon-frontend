@@ -1,62 +1,70 @@
-import { Stack, Button, Title, TextInput, Text, Divider } from '@mantine/core';
-import { useNavigate } from 'react-router';
-import { useState } from 'react';
-import { config } from '../config';
+import { Stack, Button, Title, TextInput, Text, Divider } from "@mantine/core";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import { config } from "../config";
+import { setUser } from "../helper/user";
 
 export const Login: React.FC = () => {
   const navigation = useNavigate();
 
-  const [loginUsername, setLoginUsername] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
-  const [registerUsername, setRegisterUsername] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
+  const [registerUsername, setRegisterUsername] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleRegister = async () => {
     try {
       const response = await fetch(`${config.apiUrl}/api/LifeMon/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: registerUsername, password: registerPassword }),
+        body: JSON.stringify({
+          username: registerUsername,
+          password: registerPassword,
+        }),
       });
       const result = await response.json();
       if (response.status === 200) {
-        alert('Registration successful');
+        alert("Registration successful");
+        console.log(result);
         navigation("/home");
       } else {
-        setError(result.message || 'An error occurred');
+        setError(result.message || "An error occurred");
       }
     } catch (error) {
-      setError('Failed to register. Please try again later.');
+      setError("Failed to register. Please try again later.");
     }
   };
 
   const handleLogin = async () => {
     try {
       const response = await fetch(`${config.apiUrl}/api/LifeMon/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: loginUsername, password: loginPassword }),
+        body: JSON.stringify({
+          username: loginUsername,
+          password: loginPassword,
+        }),
       });
 
       const result = await response.json();
 
-      if (response.status===200) {
-        const { UserId } = result;
-        console.log('User ID:', UserId);
-        alert('Login successful');
-        navigation("/home", { state: { UserId } });
+      if (response.status === 200) {
+        const { userId } = result;
+        setUser(userId);
+        alert("Login successful");
+        navigation("/home", { state: { UserId: userId } });
       } else {
-        setError(result.message || 'Invalid username or password');
+        setError(result.message || "Invalid username or password");
       }
     } catch (error) {
-      setError('Failed to login. Please try again later.');
+      setError("Failed to login. Please try again later.");
     }
   };
 
@@ -66,16 +74,18 @@ export const Login: React.FC = () => {
       justify="center"
       gap="md"
       style={{
-        background: 'rgba(255, 255, 255, 0.8)',
-        padding: '20px',
-        borderRadius: '10px',
-        maxWidth: '400px',
-        width: '100%',
+        background: "rgba(255, 255, 255, 0.8)",
+        padding: "20px",
+        borderRadius: "10px",
+        maxWidth: "400px",
+        width: "100%",
       }}
     >
       <Title order={6}>Welcome to</Title>
       <Title order={1}>Lifemon !!!</Title>
-      <Text>Welcome to a world where everything can be alive and fight for you</Text>
+      <Text>
+        Welcome to a world where everything can be alive and fight for you
+      </Text>
 
       <Stack justify="right">
         <TextInput
@@ -99,7 +109,13 @@ export const Login: React.FC = () => {
         />
       </Stack>
 
-      <Button variant="filled" color="indigo" size="xl" radius="lg" onClick={handleLogin}>
+      <Button
+        variant="filled"
+        color="indigo"
+        size="xl"
+        radius="lg"
+        onClick={handleLogin}
+      >
         CONNECT
       </Button>
       <Divider my="sm" />
@@ -131,7 +147,7 @@ export const Login: React.FC = () => {
           size="md"
           radius="lg"
           onClick={handleRegister}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: "10px" }}
         >
           Register Now
         </Button>
