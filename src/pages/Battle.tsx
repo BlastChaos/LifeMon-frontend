@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
@@ -13,7 +14,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 import { Key, useContext, useEffect, useState } from "react";
 import { WebSocketsContext } from "../types";
@@ -23,13 +24,12 @@ import { LifeMonImage } from "../components/lifeMonImage";
 import { pokemonTypeName } from "./pokemonType";
 
 export const Battle: React.FC = () => {
-  const { opponentId } = useParams();
   const userId = getUser();
 
   const [isWaiting, setIsWaiting] = useState(false);
   const navigate = useNavigate();
 
-  const [battleInfo, setBattleInfo] = useState();
+  const [battleInfo, setBattleInfo] = useState<any>();
 
   const webSocket = useContext(WebSocketsContext);
 
@@ -50,7 +50,7 @@ export const Battle: React.FC = () => {
 
     webSocket?.on("WaitingForPlayer", () => {
       alert("Waiting for player");
-      setIsWaiting(true)
+      setIsWaiting(true);
     });
 
     webSocket?.on("BattleInfo", (battleInfo) => {
@@ -74,21 +74,22 @@ export const Battle: React.FC = () => {
     webSocket?.invoke("Forfeit");
   };
 
-  console.log(isWaiting)
+  console.log(isWaiting);
   const attack = (moveName: string) => {
     if (!isWaiting) {
       webSocket?.invoke("Attack", moveName);
     }
   };
 
-  const player1Pokemon = battleInfo?.player1LifeMons.find((e) => e.isInTheGame);
-  const player2Pokemon = battleInfo?.player2LifeMons.find((e) => e.isInTheGame);
+  const player1Pokemon = battleInfo?.player1LifeMons.find(
+    (e: { isInTheGame: any }) => e.isInTheGame
+  );
+  const player2Pokemon = battleInfo?.player2LifeMons.find(
+    (e: { isInTheGame: any }) => e.isInTheGame
+  );
 
   const playerPokemon =
     battleInfo?.player1Id === userId ? player1Pokemon : player2Pokemon;
-
-  const opponentPokemon =
-    battleInfo?.player1Id === userId ? player2Pokemon : player1Pokemon;
 
   console.log("My pokemon", battleInfo?.player1LifeMons);
 
@@ -106,13 +107,7 @@ export const Battle: React.FC = () => {
           {battleInfo?.player1LifeMons.map(
             (
               lifeMon: {
-                lifeMon: {
-                  hp: any;
-                  id: { timestamp: any };
-                  image: any;
-                  name: any;
-                  type: any;
-                };
+                lifemon: any;
               },
               index: Key | null | undefined
             ) => (
@@ -195,22 +190,29 @@ export const Battle: React.FC = () => {
         </Group>
 
         <Group gap={rem(100)} ml={rem(100)}>
-          {playerPokemon?.lifemon?.move.map((move) => (
-            <Card
-              w={rem(175)}
-              onClick={() => attack(move.name)}
-              style={{
-                cursor: "pointer",
-              }}
-            >
-              <Stack align="start">
-                <Text fw={"bold"} size="xs">
-                  {move.name}
-                </Text>
-                <Text size="xs">{"Type: " + pokemonTypeName[move.type]}</Text>
-              </Stack>
-            </Card>
-          ))}
+          {playerPokemon?.lifemon?.move.map(
+            (move: { name: string; type: string | number }) => (
+              <Card
+                w={rem(175)}
+                onClick={() => attack(move.name)}
+                style={{
+                  cursor: "pointer",
+                }}
+              >
+                <Stack align="start">
+                  <Text fw={"bold"} size="xs">
+                    {move.name}
+                  </Text>
+                  <Text size="xs">
+                    {"Type: " +
+                      pokemonTypeName[
+                        move.type as keyof typeof pokemonTypeName
+                      ]}
+                  </Text>
+                </Stack>
+              </Card>
+            )
+          )}
         </Group>
       </Stack>
     </>
