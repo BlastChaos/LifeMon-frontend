@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group, NavLink, rem } from "@mantine/core";
+import { AppShell, Burger, Group, NavLink, rem, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet, useNavigate } from "react-router";
 
@@ -32,6 +32,7 @@ export const HomeLayout: React.FC = () => {
             visibleFrom="sm"
             size="sm"
           />
+          <Text fw={"bold"}>{"LifeMon"}</Text>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md" pb={"xl"}>
