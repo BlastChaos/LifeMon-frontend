@@ -1,6 +1,6 @@
 import { Stack } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
-import { LifeMonHp } from "./LifeMonHp";
+// import { LifeMonHp } from "./LifeMonHp";
 import { config } from "../config";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
@@ -63,9 +63,8 @@ export const Battle: React.FC = () => {
   };
   return (
     <Stack>
-      <LifeMonHp hp={100} name="Le testeur" />
-      <LifeMonHp hp={100} name="Le testeur" />
-      
+      {/* <LifeMonHp hp={100} name="Le testeur" />
+      <LifeMonHp hp={100} name="Le testeur" /> */}
     </Stack>
   );
 };
