@@ -19,13 +19,13 @@ export const Home: React.FC = () => {
     connection?.on("MatchFound", (matchedPlayerId) => {
       console.log("matchFound");
       setWaiting(false);
-      alert(`You have been matched with player: ${matchedPlayerId}`);
+      alert("You have been matched with a player!");
       navigation(`/battle/${matchedPlayerId}`);
     });
 
     connection?.on("WaitingForMatch", () => {
       setWaiting(true);
-      alert("Waiting for another player...");
+      alert("Please wait until we have found another player");
     });
     return () => {
       connection?.off("MatchFound");
