@@ -2,7 +2,6 @@ import { useState } from "react";
 import { LifeMonImage } from "../components/lifeMonImage";
 import { Stack, Text, Title, Group, Button, TextInput } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-
 import { useNavigate } from "react-router";
 import { CameraIcon, Cross2Icon, UploadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +11,9 @@ import { getUser } from "../helper/user";
 export const LifemonList: React.FC = () => {
   const navigation = useNavigate();
   const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);  // Ajout d'un état pour le statut de l'upload
+  const [uploadError, setUploadError] = useState<string | null>(null); // Erreur d'upload
+  const [base64Image, setBase64Image] = useState<string | null>(null); 
   const userId = getUser();
 
   const { data, isLoading, error } = useQuery({
@@ -32,33 +34,45 @@ export const LifemonList: React.FC = () => {
 
   console.log("API Response:", data);
 
-  // Vérification des données
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <Text>No team found.</Text>;
   }
 
   const team = data[0];
 
-  // Vérifie si `lifeMons` est bien défini
   if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
     return <Text>No Lifemons found</Text>;
   }
 
   console.log("LifeMons Data:", team.lifeMons);
 
+  // Fonction pour convertir le fichier en Base64
+  const convertFileToBase64 = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setBase64Image(reader.result as string); // Mise à jour de l'état avec l'image en base64
+      console.log("Base64 Image:", reader.result);
+    };
+    reader.readAsDataURL(file); // Conversion du fichier en base64
+  };
+
   // Fonction pour envoyer l'image avec un POST
   const handleFileUpload = async (file: File) => {
+    setUploading(true);
+    setUploadError(null);  
+
     const formData = new FormData();
-    formData.append("image", file); // Ajoute l'image au FormData
+    formData.append("image", file); // Ajouter l'image à FormData
 
     try {
-      const response = await fetch(`${config.apiUrl}/api/LifeMon/upload`, {
+      const response = await fetch(`${config.apiUrl}/api/LifeMon/uploadLifeMon`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${userId}`,
+          "Content-Type": "application/json",
         },
-        body: formData,
+        body: formData, // Envoyer l'image dans FormData
       });
+      console.log(await response.text());
 
       if (!response.ok) {
         throw new Error("Image upload failed");
@@ -67,7 +81,10 @@ export const LifemonList: React.FC = () => {
       const result = await response.json();
       console.log("Image uploaded successfully", result);
     } catch (error) {
+      setUploadError("Failed to upload image");  
       console.error("Upload error:", error);
+    } finally {
+      setUploading(false); 
     }
   };
 
@@ -75,18 +92,17 @@ export const LifemonList: React.FC = () => {
     <Stack gap="xl">
       <Title>My Lifemons</Title>
 
-      {/* Barre de recherche */}
       <Group gap="xl" justify="space-around">
         <TextInput placeholder="Search..." radius="lg" w={"60%"} />
         <Button>Add Lifemons</Button>
       </Group>
 
-      {/* Dropzone pour uploader des images */}
       <Dropzone
         onDrop={(acceptedFiles) => {
           setFiles(acceptedFiles);
           if (acceptedFiles[0]) {
-            handleFileUpload(acceptedFiles[0]); // Envoie le fichier dès qu'il est déposé
+            convertFileToBase64(acceptedFiles[0]); // Convertir l'image en base64 dès qu'elle est déposée
+            handleFileUpload(acceptedFiles[0]); // Envoie du fichier dès qu'il est déposé
           }
         }}
         accept={[MIME_TYPES.jpeg, MIME_TYPES.png]}
@@ -111,6 +127,17 @@ export const LifemonList: React.FC = () => {
           </div>
         </Group>
       </Dropzone>
+
+      {uploading && <Text>Uploading image...</Text>} {/* Afficher le statut d'upload */}
+
+      {uploadError && <Text color="red">{uploadError}</Text>} {/* Afficher une erreur si upload échoue */}
+
+      {base64Image && (
+        <div>
+          <Text size="sm">Image en Base64 :</Text>
+          <img src={base64Image} alt="Uploaded Base64" style={{ maxWidth: "35%" }} />
+        </div>
+      )}
 
       {team.lifeMons.map((lifeMon: any, index: number) => (
         <Group key={lifeMon.id?.timestamp ?? index} gap="md">
