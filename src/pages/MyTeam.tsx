@@ -39,7 +39,7 @@ export const MyTeam: React.FC = () => {
     {
       onSuccess: () => {
         setDeleting(null);
-        refetch();
+        window.location.reload();
       },
       onError: () => {
         setDeleting(null);
