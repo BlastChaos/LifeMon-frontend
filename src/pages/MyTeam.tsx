@@ -61,7 +61,7 @@ export const MyTeam: React.FC = () => {
 
   return (
     <Stack gap="xl">
-      <Title order={2}>My Team</Title>
+      <Title>My Team</Title>
       <Box p="md" mx="auto">
         <Group gap="xl">
           {team.lifeMons.map((lifeMon: any, index: number) => (
