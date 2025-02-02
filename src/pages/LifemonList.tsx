@@ -46,6 +46,31 @@ export const LifemonList: React.FC = () => {
 
   console.log("LifeMons Data:", team.lifeMons);
 
+  // Fonction pour envoyer l'image avec un POST
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file); // Ajoute l'image au FormData
+
+    try {
+      const response = await fetch(`${config.apiUrl}/api/LifeMon/upload`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${userId}`, // Ajoute l'en-tête d'autorisation si nécessaire
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Image upload failed");
+      }
+
+      const result = await response.json();
+      console.log("Image uploaded successfully", result);
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  };
+
   return (
     <Stack gap="xl">
       <Title>My Lifemons</Title>
@@ -58,7 +83,12 @@ export const LifemonList: React.FC = () => {
 
       {/* Dropzone pour uploader des images */}
       <Dropzone
-        onDrop={(acceptedFiles) => setFiles(acceptedFiles)}
+        onDrop={(acceptedFiles) => {
+          setFiles(acceptedFiles);
+          if (acceptedFiles[0]) {
+            handleFileUpload(acceptedFiles[0]); // Envoie le fichier dès qu'il est déposé
+          }
+        }}
         accept={[MIME_TYPES.jpeg, MIME_TYPES.png]}
         maxFiles={1}
         multiple={false}
