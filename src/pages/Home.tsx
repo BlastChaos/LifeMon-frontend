@@ -1,10 +1,19 @@
-import { Stack, Button, Title, Box, Popover, Badge, Text, Group } from '@mantine/core';
+import {
+  Stack,
+  Button,
+  Title,
+  Box,
+  Popover,
+  Badge,
+  Text,
+  Group,
+} from "@mantine/core";
 import { LifeMonImage } from "../components/lifeMonImage";
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { config } from '../config';
-import { getUser } from '../helper/user';
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { config } from "../config";
+import { getUser } from "../helper/user";
 
 export const Home: React.FC = () => {
   const navigation = useNavigate();
@@ -15,9 +24,11 @@ export const Home: React.FC = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
-      const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
+      const response = await fetch(
+        `${config.apiUrl}/api/LifeMon/teams/${userId}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch team');
+        throw new Error("Failed to fetch team");
       }
       return response.json();
     },
@@ -64,9 +75,17 @@ export const Home: React.FC = () => {
                   onMouseEnter={() => setOpenedIndex(index)}
                   onMouseLeave={() => setOpenedIndex(null)}
                 >
-                  <Badge>
-                    <LifeMonImage lifemon={{ url: lifeMon.image || "default-image-url.png" }} />
-                  </Badge>
+                  <Group
+                    style={{
+                      borderRadius: 100,
+                    }}
+                  >
+                    <LifeMonImage
+                      lifemon={{
+                        url: lifeMon.image || "default-image-url.png",
+                      }}
+                    />
+                  </Group>
                 </div>
               </Popover.Target>
               <Popover.Dropdown>
@@ -83,10 +102,23 @@ export const Home: React.FC = () => {
         </Group>
       </Box>
 
-      <Button variant="filled" color="indigo" size="xl" radius="lg" onClick={() => navigation("/home")}>
+      <Button
+        variant="filled"
+        color="indigo"
+        size="xl"
+        radius="lg"
+        onClick={() => navigation("/home")}
+      >
         <Title order={1}>Battle!!</Title>
       </Button>
-      <Button variant="outline" bg="white" color="indigo" size="xl" radius="lg" onClick={() => navigation("/home")}>
+      <Button
+        variant="outline"
+        bg="white"
+        color="indigo"
+        size="xl"
+        radius="lg"
+        onClick={() => navigation("/home")}
+      >
         <Title order={2}>Challenge a user</Title>
       </Button>
     </Stack>
