@@ -1,3 +1,5 @@
+/*
+
 import { useParams } from "react-router-dom";
 import { Grid, Text, Stack, Title, Paper } from "@mantine/core";
 import { LifeMonImage } from "../components/lifeMonImage";
@@ -28,7 +30,6 @@ const LifemonConsultation: React.FC = () => {
 
   return (
     <Grid>
-      {/* Colonne de gauche : Image */}
       <Grid.Col span={4}>
         <Paper shadow="xs" p="md" style={{ textAlign: "center" }}>
           <LifeMonImage
@@ -38,14 +39,11 @@ const LifemonConsultation: React.FC = () => {
           />
         </Paper>
       </Grid.Col>
-
-      {/* Colonne de droite : Informations */}
       <Grid.Col span={8}>
         <Stack gap="xs">
           <Title order={2}>{lifemonDetails.name}</Title>
           <Text size="lg">ID: {id}</Text>
 
-          {/* Deux colonnes d'informations */}
           <Grid>
             <Grid.Col span={6}>
               <Stack>
@@ -73,7 +71,6 @@ const LifemonConsultation: React.FC = () => {
             </Grid.Col>
           </Grid>
 
-          {/* Informations supplémentaires sous l'image */}
           <Grid>
             <Grid.Col span={12}>
               <Stack>
@@ -91,3 +88,6 @@ const LifemonConsultation: React.FC = () => {
 };
 
 export default LifemonConsultation;
+
+
+*/
