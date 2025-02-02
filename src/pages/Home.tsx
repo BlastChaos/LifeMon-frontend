@@ -15,7 +15,7 @@ export const Home: React.FC = () => {
     queryKey: ["lifemon", userId],
     queryFn: async () => {
       const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error('Failed to fetch team');
       }
       return response.json();
@@ -25,13 +25,14 @@ export const Home: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
+  console.log(data);
   return (
     <Stack h={300} align="stretch" justify="center" gap="md">
       <Title order={1}>Your team:</Title>
 
       <Box p="md" mx="auto">
         <Group gap="xl">
-          {data?.map((team: any, index: number) => (
+          {data?.map((lifeMons: any, index: number) => (
             <Popover
               key={index}
               opened={openedIndex === index}
@@ -54,8 +55,8 @@ export const Home: React.FC = () => {
               <Popover.Dropdown>
                 <Stack>
                   <Text>Info</Text>
-                  <Text>Name: {team.Name}</Text>
-                  <Text>LifeMons: {team.LifeMons.length}</Text>
+                  <Text>Name: {lifeMons.name}</Text>
+                  <Text>LifeMons: {lifeMons.length}</Text>
                 </Stack>
               </Popover.Dropdown>
             </Popover>
