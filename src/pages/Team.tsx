@@ -1,5 +1,4 @@
 import { Stack, Text, Title, Tabs, Group, Button, Textarea } from "@mantine/core";
-import { LifeMonImage } from "../components/lifeMonImage";
 import { MyTeam } from "./MyTeam"; 
 import { LifemonList } from "./LifemonList"; 
 import { useLocation } from "react-router";

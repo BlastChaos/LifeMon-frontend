@@ -1,7 +1,7 @@
 import { LifeMonImage } from "../components/lifeMonImage";
-import { Stack, Button, Title, Box, Group, Text } from '@mantine/core';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { config } from '../config';
+import { Stack, Button, Title, Box, Group, Text } from "@mantine/core";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { config } from "../config";
 import { useState } from "react";
 import { getUser } from "../helper/user";
 
@@ -14,9 +14,11 @@ export const MyTeam: React.FC = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
-      const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
+      const response = await fetch(
+        `${config.apiUrl}/api/LifeMon/teams/${userId}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch team');
+        throw new Error("Failed to fetch team");
       }
       return response.json();
     },
@@ -26,9 +28,12 @@ export const MyTeam: React.FC = () => {
   const deleteLifeMon = useMutation(
     async (lifemonId: string) => {
       setDeleting(lifemonId); // Désactive temporairement le bouton
-      const response = await fetch(`${config.apiUrl}/api/LifeMons/teams/${userId}/${userId}/${lifemonId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${config.apiUrl}/api/LifeMons/teams/${userId}/${userId}/${lifemonId}`,
+        {
+          method: "DELETE",
+        }
+      );
       return response.json();
     },
     {
@@ -37,8 +42,8 @@ export const MyTeam: React.FC = () => {
         refetch();
       },
       onError: () => {
-        setDeleting(null); 
-      }
+        setDeleting(null);
+      },
     }
   );
 
@@ -60,16 +65,23 @@ export const MyTeam: React.FC = () => {
       <Box p="md" mx="auto">
         <Group gap="xl">
           {team.lifeMons.map((lifeMon: any, index: number) => (
-            <Group key={lifeMon.id} bg="var(--mantine-color-blue-light)" gap={"xl"}>
+            <Group
+              key={lifeMon.id}
+              bg="var(--mantine-color-blue-light)"
+              gap={"xl"}
+            >
               <Text>{index + 1}</Text>
               <Text>{lifeMon.name}</Text>
               <LifeMonImage
-                lifemon={{
-                  url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png", 
-                }}
+                hp={lifeMon.hp ?? "N/A"}
+                id={lifeMon.id?.timestamp ?? "No ID"}
+                image={lifeMon.image || "default-image-url.png"}
+                key={index}
+                name={lifeMon.name ?? "Unknown"}
+                type={lifeMon.type ?? "N/A"}
               />
-              <Text>Hp: {lifeMon.hp}</Text> 
-              <Text>Type: {lifeMon.type}</Text> 
+              <Text>Hp: {lifeMon.hp}</Text>
+              <Text>Type: {lifeMon.type}</Text>
               <Button
                 color="red"
                 radius="xl"

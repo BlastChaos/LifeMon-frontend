@@ -17,9 +17,11 @@ export const LifemonList: React.FC = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
-      const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
+      const response = await fetch(
+        `${config.apiUrl}/api/LifeMon/teams/${userId}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch team');
+        throw new Error("Failed to fetch team");
       }
       return response.json();
     },
@@ -84,7 +86,14 @@ export const LifemonList: React.FC = () => {
         <Group key={lifeMon.id?.timestamp ?? index} gap="md">
           <Text>{index + 1}</Text>
           <Text>{lifeMon.name ?? "Unknown"}</Text>
-          <LifeMonImage lifemon={{ url: lifeMon.image || "default-image-url.png" }} />
+          <LifeMonImage
+            hp={lifeMon.hp ?? "N/A"}
+            id={lifeMon.id?.timestamp ?? "No ID"}
+            image={lifeMon.image || "default-image-url.png"}
+            key={index}
+            name={lifeMon.name ?? "Unknown"}
+            type={lifeMon.type ?? "N/A"}
+          />
           <Stack>
             <Text>Hp: {lifeMon.hp ?? "N/A"}</Text>
             <Text>Type: {lifeMon.type ?? "N/A"}</Text>
@@ -101,7 +110,9 @@ export const LifemonList: React.FC = () => {
             color="red"
             radius="xl"
             size="xs"
-            onClick={() => console.log("Delete", lifeMon.id?.timestamp ?? index)}
+            onClick={() =>
+              console.log("Delete", lifeMon.id?.timestamp ?? index)
+            }
           >
             Discard
           </Button>

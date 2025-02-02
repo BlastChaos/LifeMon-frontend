@@ -10,22 +10,24 @@ const LifemonConsultation: React.FC = () => {
   console.log("Lifemon Name:", name);
   const userId = getUser();
 
-  // Vérifie que name n'est pas undefined
-  if (!name) {
-    return <Text>Error: No Lifemon name provided.</Text>;
-  }
-
   // Requête pour récupérer les détails du LifeMon
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId, name],
     queryFn: async () => {
-      const response = await fetch(`${config.apiUrl}/api/LifeMon/lifemons/${userId}/${name}`);
+      const response = await fetch(
+        `${config.apiUrl}/api/LifeMon/lifemons/${userId}/${name}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch lifemon details");
       }
       return response.json();
     },
   });
+
+  // Vérifie que name n'est pas undefined
+  if (!name) {
+    return <Text>Error: No Lifemon name provided.</Text>;
+  }
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
@@ -41,8 +43,13 @@ const LifemonConsultation: React.FC = () => {
     <div style={{ display: "flex" }}>
       {/* Section pour l'image */}
       <div style={{ flex: 1, textAlign: "center" }}>
-        <Paper shadow="xs" p="md">  
-          <LifeMonImage lifemon={{ url: data.image }} 
+        <Paper shadow="xs" p="md">
+          <LifeMonImage
+            hp={data?.hp ?? "N/A"}
+            id={data?.id?.timestamp ?? "No ID"}
+            image={data?.image || "default-image-url.png"}
+            name={data?.name ?? "Unknown"}
+            type={data?.type ?? "N/A"}
           />
         </Paper>
       </div>
@@ -70,7 +77,9 @@ const LifemonConsultation: React.FC = () => {
           <div>
             <div>
               <Stack>
-                <Text>Description: {data.description ?? "No description available."}</Text>
+                <Text>
+                  Description: {data.description ?? "No description available."}
+                </Text>
               </Stack>
             </div>
           </div>

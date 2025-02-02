@@ -1,15 +1,5 @@
-import {
-  Stack,
-  Button,
-  Title,
-  Box,
-  Popover,
-  Badge,
-  Text,
-  Group,
-} from "@mantine/core";
+import { Stack, Button, Title, Box, Text, Group } from "@mantine/core";
 import { LifeMonImage } from "../components/lifeMonImage";
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../config";
@@ -17,7 +7,6 @@ import { getUser } from "../helper/user";
 
 export const Home: React.FC = () => {
   const navigation = useNavigate();
-  const [openedIndex, setOpenedIndex] = useState<number | null>(null);
 
   const userId = getUser();
 
@@ -60,44 +49,14 @@ export const Home: React.FC = () => {
       <Box p="md" mx="auto">
         <Group gap="xl">
           {team.lifeMons.map((lifeMon: any, index: number) => (
-            <Popover
-              key={lifeMon.id?.timestamp ?? index} // Utilise le timestamp si disponible, sinon l'index
-              opened={openedIndex === index}
-              onClose={() => setOpenedIndex(null)}
-              position="bottom"
-              withArrow
-              trapFocus={false}
-              closeOnEscape={false}
-              width={260}
-            >
-              <Popover.Target>
-                <div
-                  onMouseEnter={() => setOpenedIndex(index)}
-                  onMouseLeave={() => setOpenedIndex(null)}
-                >
-                  <Group
-                    style={{
-                      borderRadius: 100,
-                    }}
-                  >
-                    <LifeMonImage
-                      lifemon={{
-                        url: lifeMon.image || "default-image-url.png",
-                      }}
-                    />
-                  </Group>
-                </div>
-              </Popover.Target>
-              <Popover.Dropdown>
-                <Stack>
-                  <Text>Info</Text>
-                  <Text>Name: {lifeMon.name ?? "Unknown"}</Text>
-                  <Text>ID: {lifeMon.id?.timestamp ?? "No ID"}</Text>
-                  <Text>HP: {lifeMon.hp ?? "N/A"}</Text>
-                  <Text>Type: {lifeMon.type ?? "N/A"}</Text>
-                </Stack>
-              </Popover.Dropdown>
-            </Popover>
+            <LifeMonImage
+              hp={lifeMon.hp ?? "N/A"}
+              id={lifeMon.id?.timestamp ?? "No ID"}
+              image={lifeMon.image || "default-image-url.png"}
+              key={index}
+              name={lifeMon.name ?? "Unknown"}
+              type={lifeMon.type ?? "N/A"}
+            />
           ))}
         </Group>
       </Box>
