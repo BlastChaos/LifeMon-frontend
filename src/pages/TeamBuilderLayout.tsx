@@ -1,1 +1,3 @@
-export const TeamBuilderLayout: React.FC = () => {};
+export const TeamBuilderLayout: React.FC = () => {
+  return <></>;
+};

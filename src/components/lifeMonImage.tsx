@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Image, Popover, rem, Stack, Text } from "@mantine/core";
+import { Image, Popover, rem, Stack, Text } from "@mantine/core";
 
 export type Props = {
   image?: string;
