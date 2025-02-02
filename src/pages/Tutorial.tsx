@@ -38,7 +38,7 @@ export const Tutorial: React.FC = () => {
             <Image
               src="../../src/img/login.png" // Remplace par l'image de connexion
               alt="Log in"
-              style={{ borderRadius: "10px", width: "100%" }}
+              style={{ borderRadius: "10px", width: "60%" }}
             />
             <Group style={{ marginTop: "20px" }}>
               <Button
@@ -62,7 +62,7 @@ export const Tutorial: React.FC = () => {
               Once you're logged in, use the scan feature to discover Livemons nearby. Watch as they come to life in front of you!
             </Text>
             <Image
-              src="../../src/img/LivemonList.png" 
+              src="../../src/img/scan.png" 
               alt="Scan Livemons"
               style={{ borderRadius: "10px", width: "100%" }}
             />
@@ -70,7 +70,7 @@ export const Tutorial: React.FC = () => {
               <Button
                 variant="outline"
                 color="indigo"
-                onClick={() => navigation("/scan")}
+                onClick={() => navigation("/team")}
                 radius="lg"
               >
                 Start Scanning
@@ -96,7 +96,7 @@ export const Tutorial: React.FC = () => {
               <Button
                 variant="filled"
                 color="indigo"
-                onClick={() => navigation("/LifemonList")}
+                onClick={() => navigation("/team")}
                 radius="lg"
               >
                 View My Livemons
@@ -120,7 +120,7 @@ export const Tutorial: React.FC = () => {
               <Button
                 variant="outline"
                 color="indigo"
-                onClick={() => navigation("/MyTeam")}
+                onClick={() => navigation("/team")}
                 radius="lg"
               >
                 Create My Team
