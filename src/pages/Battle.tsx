@@ -128,8 +128,8 @@ export const Battle: React.FC = () => {
         </SimpleGrid>
       </Modal>
 
-      <Stack>
-        <Box bg={"blue"} w={rem(1000)} h={rem(500)} ml={rem(100)}>
+      <Stack align="center">
+        <Box bg={"blue"} w={rem(1000)} h={rem(500)}>
           <Stack justify="start">
             <Group gap={"xl"}>
               <Card
@@ -184,7 +184,7 @@ export const Battle: React.FC = () => {
           </Stack>
         </Box>
 
-        <Group gap={"xl"} ml={rem(200)}>
+        <Group gap={"xl"}>
           <Button w={rem(400)} h={rem(50)} onClick={open}>
             <Text>Switch</Text>
           </Button>
@@ -193,12 +193,13 @@ export const Battle: React.FC = () => {
           </Button>
         </Group>
 
-        <Group gap={rem(100)} ml={rem(100)}>
+        <Group gap={rem(100)}>
           {playerPokemon?.lifemon?.move.map(
             (move: { name: string; type: string | number }) => (
               <Card
                 w={rem(175)}
                 onClick={() => attack(move.name)}
+                bg={"cyan"}
                 style={{
                   cursor: "pointer",
                 }}
