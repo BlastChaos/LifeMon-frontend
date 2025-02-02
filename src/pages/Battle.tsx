@@ -1,10 +1,25 @@
-import { Card, rem, Stack, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Card,
+  FocusTrap,
+  Group,
+  Image,
+  Modal,
+  Progress,
+  rem,
+  SimpleGrid,
+  Space,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
-// import { LifeMonHp } from "./LifeMonHp";
 
-import { useContext, useEffect, useState } from "react";
+import { Key, useContext, useEffect, useState } from "react";
 import { WebSocketsContext } from "../types";
 import { getUser } from "../helper/user";
+import { useDisclosure } from "@mantine/hooks";
+import { LifeMonImage } from "../components/lifeMonImage";
 
 export const Battle: React.FC = () => {
   const { opponentId } = useParams();
@@ -15,6 +30,8 @@ export const Battle: React.FC = () => {
   const [battleInfo, setBattleInfo] = useState();
 
   const webSocket = useContext(WebSocketsContext);
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     webSocket?.on("TakeTurn", () => {});
@@ -50,7 +67,133 @@ export const Battle: React.FC = () => {
     webSocket?.invoke("GetBattleInfo");
   }, [webSocket]);
 
-  console.log(battleInfo);
+  const surrender = () => {
+    webSocket?.invoke("Forfeit");
+  };
+
+  const player1Pokemon = battleInfo?.player1LifeMons.find((e) => e.isInTheGame);
+  const player2Pokemon = battleInfo?.player2LifeMons.find((e) => e.isInTheGame);
+
+  const playerPokemon =
+    battleInfo?.player1Id === userId ? player1Pokemon : player2Pokemon;
+
+  const opponentPokemon =
+    battleInfo?.player1Id === userId ? player2Pokemon : player1Pokemon;
+
+  console.log("My pokemon", battleInfo?.player1LifeMons);
+
+  return (
+    <>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Switch Pokemon"
+        styles={{ body: { minHeight: "200px", minWidth: "200px" } }}
+      >
+        Modal without header, press escape or click on overlay to close
+        <FocusTrap.InitialFocus />
+        <SimpleGrid cols={2} spacing="xl" verticalSpacing="lg">
+          {battleInfo?.player1LifeMons.map(
+            (
+              lifeMon: {
+                lifeMon: {
+                  hp: any;
+                  id: { timestamp: any };
+                  image: any;
+                  name: any;
+                  type: any;
+                };
+              },
+              index: Key | null | undefined
+            ) => (
+              <LifeMonImage
+                hp={lifeMon.lifemon?.hp ?? "N/A"}
+                id={lifeMon.lifemon?.id?.timestamp ?? "No ID"}
+                image={lifeMon.lifemon?.image || "default-image-url.png"}
+                key={index}
+                name={lifeMon.lifemon?.name ?? "Unknown"}
+                type={lifeMon.lifemon?.type ?? "N/A"}
+              />
+            )
+          )}
+        </SimpleGrid>
+      </Modal>
+
+      <Stack>
+        <Box bg={"blue"} w={rem(1000)} h={rem(500)} ml={rem(100)}>
+          <Stack justify="start">
+            <Group gap={"xl"}>
+              <Card
+                mt={rem(40)}
+                ml={rem(40)}
+                style={{
+                  width: rem(500),
+                  height: rem(100),
+                }}
+              >
+                <ProgressBar
+                  progress={player2Pokemon?.currentHp ?? 50}
+                  name={player2Pokemon?.lifemon?.name}
+                />
+              </Card>
+            </Group>
+            <Stack align="end" pr={rem(200)}>
+              <Image
+                src={player2Pokemon?.lifemon?.image}
+                style={{
+                  width: rem(110),
+                  height: rem(110),
+                }}
+              />
+            </Stack>
+
+            <Group gap={"xl"} mt={rem(100)} mb={rem(90)}>
+              <Image
+                ml={rem(80)}
+                src={player2Pokemon?.lifemon?.image}
+                style={{
+                  width: rem(110),
+                  height: rem(110),
+                }}
+              />
+
+              <Card
+                mt={rem(10)}
+                ml={rem(250)}
+                style={{
+                  width: rem(500),
+                  height: rem(100),
+                }}
+              >
+                <ProgressBar
+                  progress={player1Pokemon?.currentHp ?? 50}
+                  name={player1Pokemon?.lifemon?.name}
+                />
+              </Card>
+              <Space w={rem(500)} />
+            </Group>
+          </Stack>
+        </Box>
+
+        <Group gap={"xl"} ml={rem(200)}>
+          <Button w={rem(400)} h={rem(50)} onClick={open}>
+            <Text>Switch</Text>
+          </Button>
+          <Button w={rem(400)} h={rem(50)} onClick={surrender}>
+            <Text>Forfeit</Text>
+          </Button>
+        </Group>
+      </Stack>
+    </>
+  );
+};
+
+type Props = {
+  progress: number;
+  name: string;
+};
+
+const ProgressBar: React.FC<Props> = (props) => {
   // Function to determine progress bar color
   const getHpColor = (hp: number) => {
     const red = Math.min(255, Math.round((100 - hp) * 2.55));
@@ -58,24 +201,18 @@ export const Battle: React.FC = () => {
     return `rgb(${red}, ${green}, 0)`;
   };
   return (
-    <Stack
-      style={{
-        position: "absolute",
-        inset: 0,
-      }}
-    >
-      <Card
-        style={{
-          width: rem(500),
-          height: rem(50),
-        }}
-      >
-        <Stack>
-          <Text fw={"bold"}></Text>
-        </Stack>
-      </Card>
-      {/* <LifeMonHp hp={100} name="Le testeur" />
-      <LifeMonHp hp={100} name="Le testeur" /> */}
+    <Stack align="start">
+      <Text fw={"bold"}>{props.name}</Text>
+      <Group align="center">
+        <Text>Hp:</Text>
+        <Progress
+          value={props.progress}
+          w={rem(399)}
+          mt={rem(5)}
+          size={"xl"}
+          color={getHpColor(props.progress)}
+        />
+      </Group>
     </Stack>
   );
 };
