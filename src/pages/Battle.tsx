@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Card,
-  FocusTrap,
   Group,
   Image,
   Modal,
@@ -80,6 +79,13 @@ export const Battle: React.FC = () => {
     }
   };
 
+  const switchPokemon = (pokemonName: string) => {
+    if (!isWaiting) {
+      webSocket?.invoke("switch", pokemonName);
+    }
+    close();
+  };
+
   const player1Pokemon = battleInfo?.player1LifeMons.find(
     (e: { isInTheGame: any }) => e.isInTheGame
   );
@@ -100,8 +106,6 @@ export const Battle: React.FC = () => {
         title="Switch Pokemon"
         styles={{ body: { minHeight: "200px", minWidth: "200px" } }}
       >
-        Modal without header, press escape or click on overlay to close
-        <FocusTrap.InitialFocus />
         <SimpleGrid cols={2} spacing="xl" verticalSpacing="lg">
           {battleInfo?.player1LifeMons.map(
             (
@@ -115,6 +119,7 @@ export const Battle: React.FC = () => {
                 id={lifeMon.lifemon?.id?.timestamp ?? "No ID"}
                 image={lifeMon.lifemon?.image || "default-image-url.png"}
                 key={index}
+                onClick={() => switchPokemon(lifeMon.lifemon.name)}
                 name={lifeMon.lifemon?.name ?? "Unknown"}
                 type={lifeMon.lifemon?.type ?? "N/A"}
               />
@@ -123,8 +128,8 @@ export const Battle: React.FC = () => {
         </SimpleGrid>
       </Modal>
 
-      <Stack>
-        <Box bg={"blue"} w={rem(1000)} h={rem(500)} ml={rem(100)}>
+      <Stack align="center">
+        <Box bg={"blue"} w={rem(1000)} h={rem(500)}>
           <Stack justify="start">
             <Group gap={"xl"}>
               <Card
@@ -179,7 +184,7 @@ export const Battle: React.FC = () => {
           </Stack>
         </Box>
 
-        <Group gap={"xl"} ml={rem(200)}>
+        <Group gap={"xl"}>
           <Button w={rem(400)} h={rem(50)} onClick={open}>
             <Text>Switch</Text>
           </Button>
@@ -188,12 +193,13 @@ export const Battle: React.FC = () => {
           </Button>
         </Group>
 
-        <Group gap={rem(100)} ml={rem(100)}>
+        <Group gap={rem(100)}>
           {playerPokemon?.lifemon?.move.map(
             (move: { name: string; type: string | number }) => (
               <Card
                 w={rem(175)}
                 onClick={() => attack(move.name)}
+                bg={"cyan"}
                 style={{
                   cursor: "pointer",
                 }}

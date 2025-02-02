@@ -10,7 +10,11 @@ export const MyTeam: React.FC = () => {
   const userId = getUser();
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
       const response = await fetch(
@@ -51,11 +55,6 @@ export const MyTeam: React.FC = () => {
 
   console.log("API Response:", data);
 
-  // Vérification des données
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return <Text>No team found.</Text>;
-  }
-
   const team = data[0];
 
   return (
@@ -63,7 +62,7 @@ export const MyTeam: React.FC = () => {
       <Title>My Team</Title>
       <Box p="md" mx="auto">
         <Group gap="xl">
-          {team.lifeMons.map((lifeMon: any, index: number) => (
+          {team?.lifeMons.map((lifeMon: any, index: number) => (
             <Group
               key={lifeMon.id}
               bg="var(--mantine-color-blue-light)"

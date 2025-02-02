@@ -16,7 +16,11 @@ export const LifemonList: React.FC = () => {
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const userId = getUser();
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
       const response = await fetch(
@@ -34,17 +38,7 @@ export const LifemonList: React.FC = () => {
 
   console.log("API Response:", data);
 
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return <Text>No team found.</Text>;
-  }
-
   const team = data[0];
-
-  if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
-    return <Text>No Lifemons found</Text>;
-  }
-
-  console.log("LifeMons Data:", team.lifeMons);
 
   // Fonction pour convertir le fichier en Base64
   const convertFileToBase64 = (file: File) => {
@@ -142,7 +136,7 @@ export const LifemonList: React.FC = () => {
           />
         </div>
       )}
-      {team.lifeMons.map((lifeMon: any, index: number) => (
+      {team?.lifeMons.map((lifeMon: any, index: number) => (
         <Group key={lifeMon.id?.timestamp ?? index} gap="md">
           <Text>{index + 1}</Text>
           <Text>{lifeMon.name ?? "Unknown"}</Text>

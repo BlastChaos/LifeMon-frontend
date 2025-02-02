@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import { HomeLayout } from "./pages/HomeLayout";
 import { Home } from "./pages/Home";
 import { Team } from "./pages/Team";
@@ -12,8 +13,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="battle/:opponentId" element={<Battle />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/Register" element={<Register />} />
+      <Route path="battle/:opponentId" element={<Battle />} />
         <Route element={<HomeLayout />}>
           <Route index path="home" element={<Home />} />
           <Route path="tutorial" element={<Tutorial />} />
