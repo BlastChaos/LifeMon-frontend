@@ -7,6 +7,7 @@ import { TeamBuilderLayout } from "./pages/TeamBuilderLayout";
 import { Team } from "./pages/Team";
 import { LifemonList } from "./pages/LifemonList";
 import { Tutorial } from "./pages/Tutorial";
+import { MantineProvider } from "@mantine/core";
 
 function App() {
   return (
