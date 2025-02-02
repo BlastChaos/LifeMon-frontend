@@ -47,7 +47,7 @@ export const Home: React.FC = () => {
                 <Badge onMouseEnter={() => setOpenedIndex(index)} onMouseLeave={() => setOpenedIndex(null)}>
                   <LifeMonImage
                     lifemon={{
-                      url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png",
+                      url: lifeMons.image,
                     }}
                   />
                 </Badge>
@@ -56,7 +56,7 @@ export const Home: React.FC = () => {
                 <Stack>
                   <Text>Info</Text>
                   <Text>Name: {lifeMons.name}</Text>
-                  <Text>LifeMons: {lifeMons.length}</Text>
+                  <Text>ID: {lifeMons.id}</Text>
                 </Stack>
               </Popover.Dropdown>
             </Popover>
