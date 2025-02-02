@@ -6,6 +6,7 @@ import { config } from "../config";
 import { getUser } from "../helper/user";
 import { useContext, useEffect, useState } from "react";
 import { WebSocketsContext } from "../types";
+import { notifications } from "@mantine/notifications";
 
 export const Home: React.FC = () => {
   const navigation = useNavigate();
@@ -19,13 +20,19 @@ export const Home: React.FC = () => {
     connection?.on("MatchFound", (matchedPlayerId) => {
       console.log("matchFound");
       setWaiting(false);
-      alert("You have been matched with a player!");
+      notifications.show({
+        title: "Player found!!",
+        message: "You have been matched with a player!",
+      });
       navigation(`/battle/${matchedPlayerId}`);
     });
 
     connection?.on("WaitingForMatch", () => {
       setWaiting(true);
-      alert("Please wait until we have found another player");
+      notifications.show({
+        title: "Searching for an opponent...",
+        message: "Please wait until we have found another player",
+      });
     });
     return () => {
       connection?.off("MatchFound");

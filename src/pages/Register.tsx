@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { config } from "../config";
+import { notifications } from "@mantine/notifications";
 
 export const Register: React.FC = () => {
   const navigation = useNavigate();
@@ -33,8 +34,10 @@ export const Register: React.FC = () => {
       });
       const result = await response.json();
       if (response.status === 200) {
-        alert("Registration successful");
-        console.log(result);
+        notifications.show({
+          title: "Registration successful",
+          message: "You have been registered successfully",
+        });
         navigation("/");
       } else {
         setError(result.message || "An error occurred");

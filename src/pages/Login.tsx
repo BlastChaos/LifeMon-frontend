@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { config } from "../config";
 import { setUser } from "../helper/user";
+import { notifications } from "@mantine/notifications";
 
 export const Login: React.FC = () => {
   const navigation = useNavigate();
@@ -39,7 +40,10 @@ export const Login: React.FC = () => {
       if (response.status === 200) {
         const { userId } = result;
         setUser(userId);
-        alert("Login successful");
+        notifications.show({
+          title: "Login successful",
+          message: "You have been logged in",
+        });
         navigation("/home", { state: { UserId: userId } });
       } else {
         setError(result.message || "Invalid username or password");
