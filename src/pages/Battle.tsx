@@ -1,9 +1,8 @@
-import { Stack } from "@mantine/core";
+import { Card, rem, Stack, Text } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 // import { LifeMonHp } from "./LifeMonHp";
-import { config } from "../config";
-import { useQuery } from "@tanstack/react-query";
-import { useContext, useEffect } from "react";
+
+import { useContext, useEffect, useState } from "react";
 import { WebSocketsContext } from "../types";
 import { getUser } from "../helper/user";
 
@@ -11,22 +10,9 @@ export const Battle: React.FC = () => {
   const { opponentId } = useParams();
   const userId = getUser();
 
-  const pokemonInfo = [];
-  const pokemonOpponentInfo = [];
-
   const navigate = useNavigate();
 
-  const { data: playerTeam, isLoading: isPlayerLoading } = useQuery({
-    queryKey: ["teams", userId],
-    queryFn: async () =>
-      (await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`)).json(),
-  });
-
-  const { data: opponentTeam, isLoading: isOpponentLoading } = useQuery({
-    queryKey: ["teams", opponentId],
-    queryFn: async () =>
-      (await fetch(`${config.apiUrl}/api/LifeMon/teams/${opponentId}`)).json(),
-  });
+  const [battleInfo, setBattleInfo] = useState();
 
   const webSocket = useContext(WebSocketsContext);
 
@@ -47,14 +33,24 @@ export const Battle: React.FC = () => {
       alert("Waiting for player");
     });
 
+    webSocket?.on("BattleInfo", (battleInfo) => {
+      setBattleInfo(battleInfo);
+    });
+
     return () => {
       webSocket?.off("TakeTurn");
       webSocket?.off("Win");
       webSocket?.off("Lose");
       webSocket?.off("WaitingForPlayer");
+      webSocket?.off("BattleInfo");
     };
-  });
+  }, [navigate, webSocket]);
 
+  useEffect(() => {
+    webSocket?.invoke("GetBattleInfo");
+  }, [webSocket]);
+
+  console.log(battleInfo);
   // Function to determine progress bar color
   const getHpColor = (hp: number) => {
     const red = Math.min(255, Math.round((100 - hp) * 2.55));
@@ -62,7 +58,22 @@ export const Battle: React.FC = () => {
     return `rgb(${red}, ${green}, 0)`;
   };
   return (
-    <Stack>
+    <Stack
+      style={{
+        position: "absolute",
+        inset: 0,
+      }}
+    >
+      <Card
+        style={{
+          width: rem(500),
+          height: rem(50),
+        }}
+      >
+        <Stack>
+          <Text fw={"bold"}></Text>
+        </Stack>
+      </Card>
       {/* <LifeMonHp hp={100} name="Le testeur" />
       <LifeMonHp hp={100} name="Le testeur" /> */}
     </Stack>
