@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LifeMonImage } from "../components/lifeMonImage";
 import { Stack, Button, Title, Box, Group, Text } from "@mantine/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -7,8 +8,6 @@ import { getUser } from "../helper/user";
 
 export const MyTeam: React.FC = () => {
   const userId = getUser();
-  const nameTeam = "";
-  const lifemonsName = "";
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery({

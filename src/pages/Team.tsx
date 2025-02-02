@@ -1,10 +1,8 @@
-import { Stack, Text, Title, Tabs, Group, Button, Textarea } from "@mantine/core";
+import { Stack, Tabs } from "@mantine/core";
 import { MyTeam } from "./MyTeam"; 
 import { LifemonList } from "./LifemonList"; 
-import { useLocation } from "react-router";
 
 export const Team: React.FC = () => {
-  const location = useLocation();
   return (
     <Stack justify="center">
      <Tabs variant="pills" defaultValue="gallery">
