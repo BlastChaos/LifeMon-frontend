@@ -20,11 +20,13 @@ import { WebSocketsContext } from "../types";
 import { getUser } from "../helper/user";
 import { useDisclosure } from "@mantine/hooks";
 import { LifeMonImage } from "../components/lifeMonImage";
+import { pokemonTypeName } from "./pokemonType";
 
 export const Battle: React.FC = () => {
   const { opponentId } = useParams();
   const userId = getUser();
 
+  const [isWaiting, setIsWaiting] = useState(false);
   const navigate = useNavigate();
 
   const [battleInfo, setBattleInfo] = useState();
@@ -48,6 +50,7 @@ export const Battle: React.FC = () => {
 
     webSocket?.on("WaitingForPlayer", () => {
       alert("Waiting for player");
+      setIsWaiting(true)
     });
 
     webSocket?.on("BattleInfo", (battleInfo) => {
@@ -69,6 +72,13 @@ export const Battle: React.FC = () => {
 
   const surrender = () => {
     webSocket?.invoke("Forfeit");
+  };
+
+  console.log(isWaiting)
+  const attack = (moveName: string) => {
+    if (!isWaiting) {
+      webSocket?.invoke("Attack", moveName);
+    }
   };
 
   const player1Pokemon = battleInfo?.player1LifeMons.find((e) => e.isInTheGame);
@@ -182,6 +192,25 @@ export const Battle: React.FC = () => {
           <Button w={rem(400)} h={rem(50)} onClick={surrender}>
             <Text>Forfeit</Text>
           </Button>
+        </Group>
+
+        <Group gap={rem(100)} ml={rem(100)}>
+          {playerPokemon?.lifemon?.move.map((move) => (
+            <Card
+              w={rem(175)}
+              onClick={() => attack(move.name)}
+              style={{
+                cursor: "pointer",
+              }}
+            >
+              <Stack align="start">
+                <Text fw={"bold"} size="xs">
+                  {move.name}
+                </Text>
+                <Text size="xs">{"Type: " + pokemonTypeName[move.type]}</Text>
+              </Stack>
+            </Card>
+          ))}
         </Group>
       </Stack>
     </>
