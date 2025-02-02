@@ -12,9 +12,10 @@ interface LifeMon {
   Type: string;
 }
 
-const navigation = useNavigate();
 
 export const LifemonList: React.FC = () => {
+  
+  const navigation = useNavigate();
   const [lifemons, setLifemons] = useState<LifeMon[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const userId = "650f7b6e9b3e3a7c2e0b1234"; // Remplace avec un vrai userId
@@ -41,8 +42,8 @@ export const LifemonList: React.FC = () => {
         <Title>My Lifemons</Title>
 
       {/* Barre de recherche */}
-      <Group gap={"xl"}>
-        <TextInput placeholder="Search..." radius="lg" />
+      <Group gap={"xl"} justify="space-around">
+        <TextInput placeholder="Search..." radius="lg"  w={"60%"}/>
         <Button>Add Lifemons</Button>
       </Group>
 
@@ -93,13 +94,10 @@ export const LifemonList: React.FC = () => {
               variant="filled"
               radius="xl"
               size="xs"
-              onClick={() => navigation(`/lifemonConsultation/${lifemon.Id}`)}
+              //onClick={() => navigation(`/lifemonConsultation/${lifemon.Id}`)}
             >
               View
             </Button>
-
-            
-
             <Button color="red" radius="xl" size="xs" onClick={() => console.log("Delete", lifemon.Id)}>
               Discard
             </Button>

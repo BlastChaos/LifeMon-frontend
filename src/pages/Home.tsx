@@ -9,15 +9,21 @@ export const Home: React.FC = () => {
   const navigation = useNavigate();
   const [openedIndex, setOpenedIndex] = useState<number | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["lifemon"],
+  const userId = "679ea994ed732de174df4795";
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["lifemon", userId],
     queryFn: async () => {
-      const test = await fetch(`${config.apiUrl}/teams/${"1234"}/${"name"}`);
-      return test.json();
+      const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch team');
+      }
+      return response.json();
     },
   });
 
   if (isLoading) return <Text>Loading...</Text>;
+  if (error instanceof Error) return <Text>{error.message}</Text>;
 
   return (
     <Stack h={300} align="stretch" justify="center" gap="md">
@@ -25,7 +31,7 @@ export const Home: React.FC = () => {
 
       <Box p="md" mx="auto">
         <Group gap="xl">
-          {data?.team?.map((lifemon: any, index: number) => (
+          {data?.map((team: any, index: number) => (
             <Popover
               key={index}
               opened={openedIndex === index}
@@ -38,18 +44,18 @@ export const Home: React.FC = () => {
             >
               <Popover.Target>
                 <Badge onMouseEnter={() => setOpenedIndex(index)} onMouseLeave={() => setOpenedIndex(null)}>
-                <LifeMonImage
-                  lifemon={{
-                    url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png",
-                  }}
-                />
+                  <LifeMonImage
+                    lifemon={{
+                      url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png",
+                    }}
+                  />
                 </Badge>
               </Popover.Target>
               <Popover.Dropdown>
                 <Stack>
                   <Text>Info</Text>
-                  <Text>Name: {lifemon.name}</Text>
-                  <Text>Type: {lifemon.name}</Text>
+                  <Text>Name: {team.Name}</Text>
+                  <Text>LifeMons: {team.LifeMons.length}</Text>
                 </Stack>
               </Popover.Dropdown>
             </Popover>

@@ -7,7 +7,8 @@ import { useLocation } from "react-router";
 export const Team: React.FC = () => {
   const location = useLocation();
   return (
-    <Tabs variant="pills" defaultValue="gallery">
+    <Stack justify="center">
+     <Tabs variant="pills" defaultValue="gallery">
       <Tabs.List>
         <Tabs.Tab value="team">
           Team
@@ -24,6 +25,9 @@ export const Team: React.FC = () => {
       <Tabs.Panel value="lifemon">
         <LifemonList/>
       </Tabs.Panel>
-    </Tabs>
+    </Tabs>      
+    </Stack>
+     
+
   );
 };
