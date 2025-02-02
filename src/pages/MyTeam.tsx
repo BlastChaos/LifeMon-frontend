@@ -15,7 +15,7 @@ export const MyTeam: React.FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["lifemon", userId],
+    queryKey: ["lifemon", "team", userId],
     queryFn: async () => {
       const response = await fetch(
         `${config.apiUrl}/api/LifeMon/teams/${userId}`
