@@ -35,7 +35,7 @@ export const Register: React.FC = () => {
       if (response.status === 200) {
         alert("Registration successful");
         console.log(result);
-        navigation("/home");
+        navigation("/");
       } else {
         setError(result.message || "An error occurred");
       }
