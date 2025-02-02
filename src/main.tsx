@@ -15,9 +15,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        {/* <WebSocketsProvider> */}
+        <WebSocketsProvider>
         <App />
-        {/* </WebSocketsProvider> */}
+        </WebSocketsProvider>
       </QueryClientProvider>
     </MantineProvider>
   </StrictMode>
