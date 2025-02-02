@@ -4,18 +4,19 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { config } from '../config';
+import { getUser } from '../helper/user';
 
 export const Home: React.FC = () => {
   const navigation = useNavigate();
   const [openedIndex, setOpenedIndex] = useState<number | null>(null);
 
-  const userId = "679ea994ed732de174df4795";
+  const userId = getUser();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId],
     queryFn: async () => {
       const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error('Failed to fetch team');
       }
       return response.json();
@@ -25,16 +26,31 @@ export const Home: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  console.log(data);
+  console.log("API Response:", data);
+
+  // Vérification des données
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <Text>No team found.</Text>;
+  }
+
+  const team = data[0];
+
+  // Vérifie si lifemons est bien un tableau et contient des données
+  if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
+    return <Text>No LifeMons found in the team.</Text>;
+  }
+
+  console.log("LifeMons Data:", team.lifeMons);
+
   return (
-    <Stack h={300} align="stretch" justify="center" gap="md">
+    <Stack h="100%" align="center" justify="center" gap="md">
       <Title order={1}>Your team:</Title>
 
       <Box p="md" mx="auto">
         <Group gap="xl">
-          {data?.map((lifeMons: any, index: number) => (
+          {team.lifeMons.map((lifeMon: any, index: number) => (
             <Popover
-              key={index}
+              key={lifeMon.id?.timestamp ?? index} // Utilise le timestamp si disponible, sinon l'index
               opened={openedIndex === index}
               onClose={() => setOpenedIndex(null)}
               position="bottom"
@@ -44,19 +60,22 @@ export const Home: React.FC = () => {
               width={260}
             >
               <Popover.Target>
-                <Badge onMouseEnter={() => setOpenedIndex(index)} onMouseLeave={() => setOpenedIndex(null)}>
-                  <LifeMonImage
-                    lifemon={{
-                      url: lifeMons.image,
-                    }}
-                  />
-                </Badge>
+                <div
+                  onMouseEnter={() => setOpenedIndex(index)}
+                  onMouseLeave={() => setOpenedIndex(null)}
+                >
+                  <Badge>
+                    <LifeMonImage lifemon={{ url: lifeMon.image || "default-image-url.png" }} />
+                  </Badge>
+                </div>
               </Popover.Target>
               <Popover.Dropdown>
                 <Stack>
                   <Text>Info</Text>
-                  <Text>Name: {lifeMons.name}</Text>
-                  <Text>ID: {lifeMons.id}</Text>
+                  <Text>Name: {lifeMon.name ?? "Unknown"}</Text>
+                  <Text>ID: {lifeMon.id?.timestamp ?? "No ID"}</Text>
+                  <Text>HP: {lifeMon.hp ?? "N/A"}</Text>
+                  <Text>Type: {lifeMon.type ?? "N/A"}</Text>
                 </Stack>
               </Popover.Dropdown>
             </Popover>
@@ -67,7 +86,7 @@ export const Home: React.FC = () => {
       <Button variant="filled" color="indigo" size="xl" radius="lg" onClick={() => navigation("/home")}>
         <Title order={1}>Battle!!</Title>
       </Button>
-      <Button variant="outline" bg='white' color="indigo" size="xl" radius="lg" onClick={() => navigation("/home")}>
+      <Button variant="outline" bg="white" color="indigo" size="xl" radius="lg" onClick={() => navigation("/home")}>
         <Title order={2}>Challenge a user</Title>
       </Button>
     </Stack>

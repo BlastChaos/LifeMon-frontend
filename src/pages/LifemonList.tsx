@@ -19,24 +19,16 @@ export const LifemonList: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const userId = "650f7b6e9b3e3a7c2e0b1234"; // Remplace avec un vrai userId
 
-  useEffect(() => {
-    const fetchLifeMons = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/myapi/lifemons/${userId}`
-        );
+    const { data, isLoading, error } = useQuery({
+      queryKey: ["lifemon", userId],
+      queryFn: async () => {
+        const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch lifemons");
+          throw new Error('Failed to fetch team');
         }
-        const data = await response.json();
-        setLifemons(data);
-      } catch (error) {
-        console.error("Error fetching lifemons:", error);
-      }
-    };
-
-    fetchLifeMons();
-  }, [userId]);
+        return response.json();
+      },
+    });
 
   return (
     <Stack gap={"xl"}>
