@@ -11,7 +11,7 @@ import { getUser } from "../helper/user";
 
 export const LifemonList: React.FC = () => {
   const navigation = useNavigate();
-  const [files, setFiles] = useState<File[]>([]);
+  const [, setFiles] = useState<File[]>([]);
   const userId = getUser();
 
   const { data, isLoading, error } = useQuery({
