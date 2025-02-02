@@ -1,93 +1,83 @@
-/*
-
 import { useParams } from "react-router-dom";
-import { Grid, Text, Stack, Title, Paper } from "@mantine/core";
+import { Text, Stack, Title, Paper } from "@mantine/core";
 import { LifeMonImage } from "../components/lifeMonImage";
+import { config } from "../config";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../helper/user";
 
 const LifemonConsultation: React.FC = () => {
-  const { id } = useParams(); // Récupère l'ID depuis l'URL
+  const { name } = useParams(); // Utilisation du paramètre de l'URL pour récupérer le nom du LifeMon
+  console.log("Lifemon Name:", name);
+  const userId = getUser();
 
-  // Exemple d'informations de LifeMon (à remplacer par les données réelles)
-  const lifemonDetails = {
-    name: "Lifemon Name",
-    hp: 150,
-    type: "Fire",
-    ability: "Flame Charge",
-    level: 42,
-    power: 230,
-    attack: 90,
-    defense: 80,
-    speed: 60,
-    weight: "50 kg",
-    height: "1.5 m",
-    region: "Kanto",
-    gender: "Male",
-    evolution: "Charizard",
-    status: "Active",
-    description: "A powerful and fiery Lifemon.",
-    lastUpdated: "2025-02-01",
-  };
+  // Vérifie que name n'est pas undefined
+  if (!name) {
+    return <Text>Error: No Lifemon name provided.</Text>;
+  }
+
+  // Requête pour récupérer les détails du LifeMon
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["lifemon", userId, name],
+    queryFn: async () => {
+      const response = await fetch(`${config.apiUrl}/api/LifeMon/lifemons/${userId}/${name}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch lifemon details");
+      }
+      return response.json();
+    },
+  });
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error instanceof Error) return <Text>{error.message}</Text>;
+
+  // Vérifie si data contient un Lifemon valide
+  if (!data) {
+    return <Text>No Lifemon details found.</Text>;
+  }
+
+  console.log("Lifemon Data:", data);
 
   return (
-    <Grid>
-      <Grid.Col span={4}>
-        <Paper shadow="xs" p="md" style={{ textAlign: "center" }}>
-          <LifeMonImage
-            lifemon={{
-              url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png", // Remplacer par l'URL dynamique de l'image
-            }}
+    <div style={{ display: "flex" }}>
+      {/* Section pour l'image */}
+      <div style={{ flex: 1, textAlign: "center" }}>
+        <Paper shadow="xs" p="md">  
+          <LifeMonImage lifemon={{ url: data.image }} 
           />
         </Paper>
-      </Grid.Col>
-      <Grid.Col span={8}>
+      </div>
+
+      {/* Section pour les détails */}
+      <div style={{ flex: 2 }}>
         <Stack gap="xs">
-          <Title order={2}>{lifemonDetails.name}</Title>
-          <Text size="lg">ID: {id}</Text>
+          <Title order={2}>{data.name ?? "Unknown Lifemon"}</Title>
 
-          <Grid>
-            <Grid.Col span={6}>
+          <div>
+            <div style={{ marginBottom: "10px" }}>
               <Stack>
-                <Text>Hp: {lifemonDetails.hp}</Text>
-                <Text>Type: {lifemonDetails.type}</Text>
-                <Text>Ability: {lifemonDetails.ability}</Text>
-                <Text>Level: {lifemonDetails.level}</Text>
-                <Text>Power: {lifemonDetails.power}</Text>
-                <Text>Attack: {lifemonDetails.attack}</Text>
-                <Text>Defense: {lifemonDetails.defense}</Text>
-                <Text>Speed: {lifemonDetails.speed}</Text>
-                <Text>Weight: {lifemonDetails.weight}</Text>
+                <Text>HP: {data.hp ?? "N/A"}</Text>
+                <Text>Type: {data.type ?? "N/A"}</Text>
+                <Text>Attack: {data.attack ?? "N/A"}</Text>
+                <Text>Special Attack: {data.specialAttack ?? "N/A"}</Text>
+                <Text>Defense: {data.defense ?? "N/A"}</Text>
+                <Text>Special Defense: {data.specialDefense ?? "N/A"}</Text>
+                <Text>Speed: {data.speed ?? "N/A"}</Text>
+                <Text>Species: {data.species ?? "N/A"}</Text>
               </Stack>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Stack>
-                <Text>Height: {lifemonDetails.height}</Text>
-                <Text>Region: {lifemonDetails.region}</Text>
-                <Text>Gender: {lifemonDetails.gender}</Text>
-                <Text>Evolution: {lifemonDetails.evolution}</Text>
-                <Text>Status: {lifemonDetails.status}</Text>
-                <Text>Description: {lifemonDetails.description}</Text>
-                <Text>Last Updated: {lifemonDetails.lastUpdated}</Text>
-              </Stack>
-            </Grid.Col>
-          </Grid>
+            </div>
+          </div>
 
-          <Grid>
-            <Grid.Col span={12}>
+          <div>
+            <div>
               <Stack>
-                <Text>Description: {lifemonDetails.description}</Text>
-                <Text>Status: {lifemonDetails.status}</Text>
-                <Text>Region: {lifemonDetails.region}</Text>
-                <Text>Last Updated: {lifemonDetails.lastUpdated}</Text>
+                <Text>Description: {data.description ?? "No description available."}</Text>
               </Stack>
-            </Grid.Col>
-          </Grid>
+            </div>
+          </div>
         </Stack>
-      </Grid.Col>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
 export default LifemonConsultation;
-
-
-*/

@@ -6,6 +6,7 @@ import { Home } from "./pages/Home";
 import { Team } from "./pages/Team";
 import { Tutorial } from "./pages/Tutorial";
 import { Battle } from "./pages/Battle";
+import LifemonConsultation from "./pages/LifemonConsultation";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="tutorial" element={<Tutorial />} />
           <Route path="team" index element={<Team />} />
         </Route>
+        <Route path="/lifemonConsultation/:name" element={<LifemonConsultation />} />
       </Routes>
     </BrowserRouter>
   );

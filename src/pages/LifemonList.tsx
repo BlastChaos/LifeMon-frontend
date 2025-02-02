@@ -93,7 +93,7 @@ export const LifemonList: React.FC = () => {
             variant="filled"
             radius="xl"
             size="xs"
-            onClick={() => navigation(`/lifemonConsultation/${lifeMon.id?.timestamp ?? index}`)}
+            onClick={() => navigation(`/lifemonConsultation/${lifeMon.name}`)}
           >
             View
           </Button>
