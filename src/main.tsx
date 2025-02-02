@@ -7,6 +7,7 @@ import "@mantine/core/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WebSocketsProvider } from "./pages/WebSocketProvider.tsx";
+import { Notifications } from "@mantine/notifications";
 
 const theme = createTheme({});
 export const queryClient = new QueryClient();
@@ -14,9 +15,10 @@ export const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
+      <Notifications />
       <QueryClientProvider client={queryClient}>
         <WebSocketsProvider>
-        <App />
+          <App />
         </WebSocketsProvider>
       </QueryClientProvider>
     </MantineProvider>
