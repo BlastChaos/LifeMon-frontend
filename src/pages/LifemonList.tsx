@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { LifeMonImage } from "../components/lifeMonImage";
 import { Stack, Text, Title, Group, Button, TextInput } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useNavigate } from "react-router";
@@ -7,6 +6,7 @@ import { CameraIcon, Cross2Icon, UploadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../config";
 import { getUser } from "../helper/user";
+import { LifeMonRow } from "./LifeMonRow";
 
 export const LifemonList: React.FC = () => {
   const navigation = useNavigate();
@@ -146,33 +146,19 @@ export const LifemonList: React.FC = () => {
         </div>
       )}
       {data?.map((lifeMon: any, index: number) => (
-        <Group key={lifeMon.id?.timestamp ?? index} gap="md">
-          <Text>{index + 1}</Text>
-          <Text>{lifeMon.name ?? "Unknown"}</Text>
-          <LifeMonImage
-            hp={lifeMon.hp ?? "N/A"}
-            id={lifeMon.id?.timestamp ?? "No ID"}
-            image={lifeMon.image || "default-image-url.png"}
-            key={index}
-            name={lifeMon.name ?? "Unknown"}
-            type={lifeMon.type ?? "N/A"}
-          />
-          <Stack>
-            <Text>Hp: {lifeMon.hp ?? "N/A"}</Text>
-            <Text>Type: {lifeMon.type ?? "N/A"}</Text>
-          </Stack>
-          <Button
-            variant="filled"
-            radius="xl"
-            size="xs"
-            onClick={() => navigation(`/lifemonConsultation/${lifeMon.name}`)}
-          >
-            View
-          </Button>
-          <Button color="red" radius="xl" size="xs">
-            Discard
-          </Button>
-        </Group>
+        <LifeMonRow
+          type={lifeMon.type}
+          attack={lifeMon.attack}
+          defense={lifeMon.defense}
+          index={index.toString()}
+          hp={lifeMon.hp}
+          image={lifeMon.image}
+          name={lifeMon.name}
+          specialDefense={lifeMon.specialDefense}
+          onView={() => navigation(`/lifemonConsultation/${lifeMon.name}`)}
+          speed={lifeMon.speed}
+          specialAttack={lifeMon.specialAttack}
+        />
       ))}
     </Stack>
   );

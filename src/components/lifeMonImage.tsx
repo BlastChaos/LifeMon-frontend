@@ -32,9 +32,9 @@ export const LifeMonImage: React.FC<Props> = (props) => {
             onClick={props.onClick}
             style={{
               cursor: "pointer",
-              width: rem(100),
+              width: rem(70),
               borderRadius: 100,
-              height: rem(100),
+              height: rem(70),
             }}
           />
         </div>
@@ -43,7 +43,6 @@ export const LifeMonImage: React.FC<Props> = (props) => {
         <Stack>
           <Text>Info</Text>
           <Text>Name: {props.name ?? "Unknown"}</Text>
-          <Text>ID: {props.id ?? "No ID"}</Text>
           <Text>HP: {props.hp ?? "N/A"}</Text>
           <Text>Type: {props.type ?? "N/A"}</Text>
         </Stack>
