@@ -96,8 +96,6 @@ export const Battle: React.FC = () => {
   const playerPokemon =
     battleInfo?.player1Id === userId ? player1Pokemon : player2Pokemon;
 
-  console.log("My pokemon", battleInfo?.player1LifeMons);
-
   return (
     <>
       <Modal
@@ -230,7 +228,6 @@ type Props = {
 };
 
 const ProgressBar: React.FC<Props> = (props) => {
-  // Function to determine progress bar color
   const getHpColor = (hp: number) => {
     const red = Math.min(255, Math.round((100 - hp) * 2.55));
     const green = Math.min(255, Math.round(hp * 2.55));

@@ -6,11 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../helper/user";
 
 const LifemonConsultation: React.FC = () => {
-  const { name } = useParams(); // Utilisation du paramètre de l'URL pour récupérer le nom du LifeMon
-  console.log("Lifemon Name:", name);
+  const { name } = useParams();
   const userId = getUser();
 
-  // Requête pour récupérer les détails du LifeMon
   const { data, isLoading, error } = useQuery({
     queryKey: ["lifemon", userId, name],
     queryFn: async () => {
@@ -24,7 +22,6 @@ const LifemonConsultation: React.FC = () => {
     },
   });
 
-  // Vérifie que name n'est pas undefined
   if (!name) {
     return <Text>Error: No Lifemon name provided.</Text>;
   }
@@ -32,12 +29,10 @@ const LifemonConsultation: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  // Vérifie si data contient un Lifemon valide
   if (!data) {
     return <Text>No Lifemon details found.</Text>;
   }
 
-  console.log("Lifemon Data:", data);
 
   return (
     <div style={{ display: "flex" }}>

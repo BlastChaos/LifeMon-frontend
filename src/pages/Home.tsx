@@ -18,7 +18,6 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     connection?.on("MatchFound", (matchedPlayerId) => {
-      console.log("matchFound");
       setWaiting(false);
       notifications.show({
         title: "Player found!!",
@@ -56,21 +55,16 @@ export const Home: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  console.log("API Response:", data);
-
-  // Vérification des données
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <Text>No team found.</Text>;
   }
 
   const team = data[0];
 
-  // Vérifie si lifemons est bien un tableau et contient des données
   if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
     return <Text>No LifeMons found in the team.</Text>;
   }
 
-  console.log("LifeMons Data:", team.lifeMons);
 
   const handleLogin = () => {
     connection?.invoke("Login", userId);

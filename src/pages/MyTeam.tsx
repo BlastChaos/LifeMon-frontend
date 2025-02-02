@@ -27,10 +27,9 @@ export const MyTeam: React.FC = () => {
     },
   });
 
-  // Suppression d'un LifeMon
   const deleteLifeMon = useMutation(
     async (lifemonId: string) => {
-      setDeleting(lifemonId); // Désactive temporairement le bouton
+      setDeleting(lifemonId);
       const response = await fetch(
         `${config.apiUrl}/api/LifeMons/teams/${userId}/${userId}/${lifemonId}`,
         {
@@ -52,8 +51,6 @@ export const MyTeam: React.FC = () => {
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
-
-  console.log("API Response:", data);
 
   const team = data[0];
 
@@ -85,7 +82,7 @@ export const MyTeam: React.FC = () => {
                 radius="xl"
                 size="xs"
                 onClick={() => deleteLifeMon.mutate(lifeMon.id)}
-                disabled={deleting === lifeMon.id} // Désactiver si en cours de suppression
+                disabled={deleting === lifeMon.id}
               >
                 {deleting === lifeMon.id ? "Deleting..." : "Discard"}
               </Button>

@@ -11,8 +11,8 @@ import { getUser } from "../helper/user";
 export const LifemonList: React.FC = () => {
   const navigation = useNavigate();
   const [, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false); // Ajout d'un état pour le statut de l'upload
-  const [uploadError, setUploadError] = useState<string | null>(null); // Erreur d'upload
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const userId = getUser();
 
@@ -36,27 +36,42 @@ export const LifemonList: React.FC = () => {
   if (isLoading) return <Text>Loading...</Text>;
   if (error instanceof Error) return <Text>{error.message}</Text>;
 
-  console.log("API Response:", data);
-
   const team = data[0];
 
-  // Fonction pour convertir le fichier en Base64
   const convertFileToBase64 = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setBase64Image(reader.result as string); // Mise à jour de l'état avec l'image en base64
-      console.log("Base64 Image:", reader.result);
+      setBase64Image(reader.result as string); 
     };
-    reader.readAsDataURL(file); // Conversion du fichier en base64
+    reader.readAsDataURL(file); 
   };
 
-  // Fonction pour envoyer l'image avec un POST
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64WithoutPrefix = base64String.split(",")[1];
+        resolve(base64WithoutPrefix);
+      };
+
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     setUploadError(null);
 
-    const formData = new FormData();
-    formData.append("image", file); // Ajouter l'image à FormData
+    const image = await fileToBase64(file);
+
+    const requestBody = {
+      base64Image: image,
+      mimeType: "image/jpeg", 
+      userId,
+    };
 
     try {
       const response = await fetch(
@@ -66,17 +81,15 @@ export const LifemonList: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: formData, // Envoyer l'image dans FormData
+          body: JSON.stringify(requestBody),
         }
       );
-      console.log(await response.text());
 
       if (!response.ok) {
         throw new Error("Image upload failed");
       }
 
       const result = await response.json();
-      console.log("Image uploaded successfully", result);
     } catch (error) {
       setUploadError("Failed to upload image");
       console.error("Upload error:", error);
@@ -96,8 +109,8 @@ export const LifemonList: React.FC = () => {
         onDrop={(acceptedFiles) => {
           setFiles(acceptedFiles);
           if (acceptedFiles[0]) {
-            convertFileToBase64(acceptedFiles[0]); // Convertir l'image en base64 dès qu'elle est déposée
-            handleFileUpload(acceptedFiles[0]); // Envoie du fichier dès qu'il est déposé
+            convertFileToBase64(acceptedFiles[0]);  
+            handleFileUpload(acceptedFiles[0]);
           }
         }}
         accept={[MIME_TYPES.jpeg, MIME_TYPES.png]}
@@ -160,14 +173,7 @@ export const LifemonList: React.FC = () => {
           >
             View
           </Button>
-          <Button
-            color="red"
-            radius="xl"
-            size="xs"
-            onClick={() =>
-              console.log("Delete", lifeMon.id?.timestamp ?? index)
-            }
-          >
+          <Button color="red" radius="xl" size="xs">
             Discard
           </Button>
         </Group>

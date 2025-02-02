@@ -9,11 +9,11 @@ import { WebSocketsContext } from "../types";
 
 export const WebSocketsProvider: React.FC<PropsWithChildren> = (props) => {
   const connect = new HubConnectionBuilder()
-    .configureLogging(LogLevel.Debug) // add this for diagnostic clues
+    .configureLogging(LogLevel.Debug)
     .withUrl(`${config.apiUrl}/matchmaking`, {
       skipNegotiation: true,
       transport: HttpTransportType.WebSockets,
-    }) // Your server URL
+    })
     .build();
 
   connect
