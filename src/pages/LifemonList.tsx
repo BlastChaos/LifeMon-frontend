@@ -1,41 +1,55 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LifeMonImage } from "../components/lifeMonImage";
 import { Stack, Text, Title, Group, Button, TextInput } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 
 import { useNavigate } from "react-router";
 import { CameraIcon, Cross2Icon, UploadIcon } from "@radix-ui/react-icons";
-
-interface LifeMon {
-  Id: string;
-  Name: string;
-  Hp: number;
-  Type: string;
-}
+import { useQuery } from "@tanstack/react-query";
+import { config } from "../config";
+import { getUser } from "../helper/user";
 
 export const LifemonList: React.FC = () => {
   const navigation = useNavigate();
-  const [lifemons, setLifemons] = useState<LifeMon[]>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const userId = "650f7b6e9b3e3a7c2e0b1234"; // Remplace avec un vrai userId
+  const userId = getUser();
 
-    const { data, isLoading, error } = useQuery({
-      queryKey: ["lifemon", userId],
-      queryFn: async () => {
-        const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch team');
-        }
-        return response.json();
-      },
-    });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["lifemon", userId],
+    queryFn: async () => {
+      const response = await fetch(`${config.apiUrl}/api/LifeMon/teams/${userId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch team');
+      }
+      return response.json();
+    },
+  });
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error instanceof Error) return <Text>{error.message}</Text>;
+
+  console.log("API Response:", data);
+
+  // Vérification des données
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <Text>No team found.</Text>;
+  }
+
+  const team = data[0];
+
+  // Vérifie si `lifeMons` est bien défini
+  if (!team || !Array.isArray(team.lifeMons) || team.lifeMons.length === 0) {
+    return <Text>No Lifemons found</Text>;
+  }
+
+  console.log("LifeMons Data:", team.lifeMons);
 
   return (
-    <Stack gap={"xl"}>
+    <Stack gap="xl">
       <Title>My Lifemons</Title>
 
       {/* Barre de recherche */}
-      <Group gap={"xl"} justify="space-around">
+      <Group gap="xl" justify="space-around">
         <TextInput placeholder="Search..." radius="lg" w={"60%"} />
         <Button>Add Lifemons</Button>
       </Group>
@@ -66,42 +80,33 @@ export const LifemonList: React.FC = () => {
         </Group>
       </Dropzone>
 
-      {/* Liste des Lifemons */}
-      {lifemons.length > 0 ? (
-        lifemons.map((lifemon, index) => (
-          <Group key={lifemon.Id}>
-            <Text>{index + 1}</Text>
-            <Text>{lifemon.Name}</Text>
-            <LifeMonImage
-              lifemon={{
-                url: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png",
-              }}
-            />
-            <Stack>
-              <Text>Hp: {lifemon.Hp}</Text>
-              <Text>Type: {lifemon.Type}</Text>
-            </Stack>
-            <Button
-              variant="filled"
-              radius="xl"
-              size="xs"
-              //onClick={() => navigation(`/lifemonConsultation/${lifemon.Id}`)}
-            >
-              View
-            </Button>
-            <Button
-              color="red"
-              radius="xl"
-              size="xs"
-              onClick={() => console.log("Delete", lifemon.Id)}
-            >
-              Discard
-            </Button>
-          </Group>
-        ))
-      ) : (
-        <Text>No Lifemons found</Text>
-      )}
+      {team.lifeMons.map((lifeMon: any, index: number) => (
+        <Group key={lifeMon.id?.timestamp ?? index} gap="md">
+          <Text>{index + 1}</Text>
+          <Text>{lifeMon.name ?? "Unknown"}</Text>
+          <LifeMonImage lifemon={{ url: lifeMon.image || "default-image-url.png" }} />
+          <Stack>
+            <Text>Hp: {lifeMon.hp ?? "N/A"}</Text>
+            <Text>Type: {lifeMon.type ?? "N/A"}</Text>
+          </Stack>
+          <Button
+            variant="filled"
+            radius="xl"
+            size="xs"
+            onClick={() => navigation(`/lifemonConsultation/${lifeMon.id?.timestamp ?? index}`)}
+          >
+            View
+          </Button>
+          <Button
+            color="red"
+            radius="xl"
+            size="xs"
+            onClick={() => console.log("Delete", lifeMon.id?.timestamp ?? index)}
+          >
+            Discard
+          </Button>
+        </Group>
+      ))}
     </Stack>
   );
 };
