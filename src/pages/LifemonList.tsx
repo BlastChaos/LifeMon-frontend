@@ -55,7 +55,7 @@ export const LifemonList: React.FC = () => {
       const response = await fetch(`${config.apiUrl}/api/LifeMon/upload`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${userId}`, // Ajoute l'en-tête d'autorisation si nécessaire
+          "Authorization": `Bearer ${userId}`,
         },
         body: formData,
       });
